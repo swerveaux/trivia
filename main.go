@@ -3,8 +3,8 @@ package main
 import (
 	"bufio"
 	"embed"
-	_ "embed"
 	"fmt"
+	"io/fs"
 	"math/rand"
 	"strconv"
 	"strings"
@@ -32,7 +32,11 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	defer file.Close()
+	defer func(fs fs.File) {
+		if err := file.Close(); err != nil {
+			fmt.Println(err)
+		}
+	}(file)
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
