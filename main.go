@@ -42,10 +42,15 @@ func main() {
 	for scanner.Scan() {
 		line := scanner.Text()
 		parts := strings.Split(line, " - ")
+		if len(parts) != 2 {
+			fmt.Printf("Ignoring line that doesn't appear to be the correct format: '%s'\n", line)
+			continue
+		}
 		name := parts[0]
 		age, err := strconv.Atoi(parts[1])
 		if err != nil {
-			panic(err)
+			fmt.Printf("Ignoring line with unparseable age: '%s'\n", parts[1])
+			continue
 		}
 		celebAges = append(celebAges, CelebAge{name, age, maxWeight})
 	}
@@ -56,7 +61,7 @@ func main() {
 
 	for {
 		celebMatrix := populateMatrix(celebAges)
-		celebAge := &celebMatrix[rand.Intn(len(celebMatrix))]
+		celebAge := celebMatrix[rand.Intn(len(celebMatrix))]
 		fmt.Printf("%s: ", celebAge.Name)
 		_, err := fmt.Scanf("%s", &ageInput)
 		if err != nil {
