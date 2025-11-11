@@ -8,6 +8,8 @@ import (
 	"math/rand"
 	"strconv"
 	"strings"
+
+	"github.com/shopspring/decimal"
 )
 
 //go:embed birthdays.txt
@@ -21,12 +23,34 @@ type CelebAge struct {
 	Weight int
 }
 
+type Score struct {
+	NumCorrect   int64
+	NumIncorrect int64
+}
+
+func (s *Score) Correct() {
+	s.NumCorrect++
+}
+
+func (s *Score) Incorrect() {
+	s.NumIncorrect++
+}
+
+func (s Score) String() string {
+	return fmt.Sprintf("%d correct, %d incorrect (%v%%)\n", s.NumCorrect, s.NumIncorrect, s.PercentCorrect())
+}
+
+func (s *Score) PercentCorrect() decimal.Decimal {
+	return decimal.NewFromInt(s.NumCorrect).Div(decimal.NewFromInt(s.NumIncorrect + s.NumCorrect)).Mul(decimal.NewFromInt(100))
+}
+
 func (c *CelebAge) String() string {
 	return fmt.Sprintf("%s: %d", c.Name, c.Age)
 }
 
 func main() {
 	celebAges := make([]CelebAge, 0)
+	s := Score{}
 
 	file, err := f.Open("birthdays.txt")
 	if err != nil {
@@ -81,12 +105,15 @@ func main() {
 
 		if age == celebAge.Age {
 			fmt.Println("Correct!")
+			s.Correct()
 		} else {
 			fmt.Printf("Sorry, %s is %d\n", celebAge.Name, celebAge.Age)
+			s.Incorrect()
 		}
 
 		setWeight(celebAges, 0, celebAge.Name)
 	}
+	fmt.Println(s)
 	fmt.Println("Bye!")
 }
 
