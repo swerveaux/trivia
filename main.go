@@ -36,7 +36,7 @@ func (s *Score) Incorrect() {
 	s.NumIncorrect++
 }
 
-func (s Score) String() string {
+func (s *Score) String() string {
 	return fmt.Sprintf("%d correct, %d incorrect (%v%%)\n", s.NumCorrect, s.NumIncorrect, s.PercentCorrect())
 }
 
@@ -50,7 +50,7 @@ func (c *CelebAge) String() string {
 
 func main() {
 	celebAges := make([]CelebAge, 0)
-	s := Score{}
+	s := &Score{}
 
 	file, err := f.Open("birthdays.txt")
 	if err != nil {
