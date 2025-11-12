@@ -12,3 +12,13 @@ The only-non-core dependency is the decimal library from
 shopspring. It's also trivial to get rid of that external dependency,
 especially since we're not really talking about money here, so
 floats would probably be fine.
+
+One of the problems I ran into initially is that truly random choices
+meant sometimes you'd get the same person 3-4 times in a row. 
+Randomness is weird like that. So I tried to weight it - 
+everyone starts with a set number of entries in a slice, by 
+default 10, but when they come up as a choice, they drop to 1 entry
+in the slice. As long as they don't come up again, their number
+of entries in the slice grows by one back up to that max of 10.
+It's not perfect, you still get some weird RND choices, but it
+did seem to improve the variety of names that came up.
